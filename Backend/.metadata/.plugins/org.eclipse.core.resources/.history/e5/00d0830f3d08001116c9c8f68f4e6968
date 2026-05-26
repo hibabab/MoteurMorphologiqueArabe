@@ -1,0 +1,160 @@
+package ProjetMorphologieAlgo;
+
+import java.util.*;
+
+public class HashTable {
+    private HashMap<String, String> table;
+    
+    public HashTable() {
+        table = new HashMap<>();
+        genererSchemesAutomatique();
+    }
+    
+    private void genererSchemesAutomatique() {
+        String[] schemes = {
+            "فاعل", "مفعول", "افتعل", "مفعال", 
+            "تفاعل", "انفعل", "مفعل", "مفعلة"
+        };
+        
+        for (String scheme : schemes) {
+            ajouterScheme(scheme);
+        }
+    }
+    
+    private String analyserScheme(String scheme) {
+        StringBuilder regle = new StringBuilder();
+        
+        for (char lettre : scheme.toCharArray()) {
+            switch (lettre) {
+                case 'ف':
+                    regle.append("V[0]");
+                    break;
+                case 'ع':
+                    regle.append("V[1]");
+                    break;
+                case 'ل':
+                    regle.append("V[2]");
+                    break;
+                default:
+                    regle.append(lettre);
+            }
+        }
+        
+        return regle.toString();
+    }
+    
+    // ========== GESTION DES SCHÈMES ==========
+    
+    // 1. AJOUTER un nouveau schème
+    public boolean ajouterScheme(String nomScheme) {
+        if (table.containsKey(nomScheme)) {
+            System.out.println("Le schème '" + nomScheme + "' existe déjà.");
+            return false;
+        }
+        
+        String regleGeneree = analyserScheme(nomScheme);
+        table.put(nomScheme, regleGeneree);
+        System.out.println("✓ Schème '" + nomScheme + "' ajouté avec succès.");
+        return true;
+    }
+    
+    // 2. MODIFIER un schème existant (juste le nom)
+    public boolean modifierScheme(String ancienNom, String nouveauNom) {
+        if (!table.containsKey(ancienNom)) {
+            System.out.println("❌ Le schème '" + ancienNom + "' n'existe pas.");
+            return false;
+        }
+        
+        if (table.containsKey(nouveauNom)) {
+            System.out.println("❌ Le schème '" + nouveauNom + "' existe déjà.");
+            return false;
+        }
+        
+        String regle = table.remove(ancienNom);
+        String nouvelleRegle = analyserScheme(nouveauNom);
+        table.put(nouveauNom, nouvelleRegle);
+        
+        System.out.println("✓ Schème modifié: '" + ancienNom + "' → '" + nouveauNom + "'");
+        return true;
+    }
+    
+    // 3. SUPPRIMER un schème
+    public boolean supprimerScheme(String nomScheme) {
+        if (!table.containsKey(nomScheme)) {
+            System.out.println("❌ Le schème '" + nomScheme + "' n'existe pas.");
+            return false;
+        }
+        
+        table.remove(nomScheme);
+        System.out.println("✓ Schème '" + nomScheme + "' supprimé avec succès.");
+        return true;
+    }
+    
+    // ========== TRANSFORMATIONS ==========
+    
+    // Transformation simple (un seul verbe, un seul schème)
+    public String transformer(String verbe, String scheme) {
+        if (verbe == null || verbe.length() < 3) {
+            System.err.println("Le verbe doit contenir au moins 3 lettres");
+            return "";
+        }
+        
+        String regle = table.get(scheme);
+        if (regle == null) {
+            System.out.println("Schème non trouvé : " + scheme);
+            return "";
+        }
+        String motGenere = regle
+                .replace("V[0]", verbe.substring(0, 1))
+                .replace("V[1]", verbe.substring(1, 2))
+                .replace("V[2]", verbe.substring(2, 3));
+
+        // Mise à jour automatique de la fréquence (génération)
+        if (!motGenere.isEmpty()) {
+            arbre.ajouterDeriveARacine(verbe, motGenere);
+        }
+        return motGenere;
+        
+    }
+    
+    // Transformation multiple (un verbe, plusieurs schèmes)
+    public List<String> transformer(String verbe, String[] schemes) {
+        List<String> resultats = new ArrayList<>();
+        
+        if (verbe == null || verbe.length() < 3) {
+            System.err.println("Le verbe doit contenir au moins 3 lettres");
+            return resultats;
+        }
+        
+        for (String scheme : schemes) {
+            String resultat = this.transformer(verbe, scheme);
+            if (!resultat.isEmpty()) {
+                resultats.add(resultat);
+            } else {
+                System.out.println("Schème non trouvé : " + scheme);
+            }
+        }
+        
+        return resultats;
+    }
+    
+    
+    // ========== AFFICHAGE ==========
+    
+    public void afficherTous() {
+        System.out.println("=== Schèmes disponibles (" + table.size() + ") ===");
+        for (Map.Entry<String, String> entry : table.entrySet()) {
+            System.out.println("• " + entry.getKey() + " → " + entry.getValue());
+        }
+    }
+    
+    public void afficherScheme(String nomScheme) {
+        if (table.containsKey(nomScheme)) {
+            String regle = table.get(nomScheme);
+            System.out.println("Schème: " + nomScheme);
+            System.out.println("Règle: " + regle);
+        } else {
+            System.out.println("Schème '" + nomScheme + "' non trouvé.");
+        }
+    }
+}

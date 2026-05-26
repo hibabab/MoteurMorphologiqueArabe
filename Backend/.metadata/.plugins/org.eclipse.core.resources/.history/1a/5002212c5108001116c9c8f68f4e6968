@@ -1,0 +1,163 @@
+package ProjetMorphologieAlgo;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+public class TraitementTextuel {
+    
+    public static void main(String[] args) {
+        // Chemin du fichier de verbes
+        String cheminFichier = "C:\\Users\\qsqsq\\OneDrive\\Bureau\\ProjetAlgo\\ProjetMorphologie\\src\\ProjetMorphologieAlgo\\verbes.txt";
+        
+        try {
+            System.out.println("=== TEST DE L'APPLICATION DE MORPHOLOGIE ARABE ===\n");
+            
+            // 1. Créer et charger l'arbre depuis le fichier
+            System.out.println("ÉTAPE 1: Chargement des verbes depuis le fichier");
+            ABRTree arbre = new ABRTree();
+            arbre.chargerVerbesDepuisFichier(cheminFichier);
+            
+            // 2. Afficher toutes les racines
+            System.out.println("\nÉTAPE 2: Affichage des racines chargées");
+            arbre.afficherToutesRacines();
+            
+            // 3. Initialiser la table de schèmes
+            System.out.println("\nÉTAPE 3: Initialisation des schèmes");
+            HashTable tableSchemes = new HashTable();
+            tableSchemes.afficherTous();
+            
+            // 4. Ajouter, modifier et supprimer des schèmes
+            System.out.println("\nÉTAPE 4: Tests de gestion des schèmes");
+            
+            System.out.println("\n=== TEST AJOUT ===");
+            tableSchemes.ajouterScheme("استفعل");
+            tableSchemes.ajouterScheme("تفعيل");
+            tableSchemes.ajouterScheme("انفعال");
+            tableSchemes.afficherTous();
+            
+            System.out.println("\n=== TEST MODIFICATION ===");
+            tableSchemes.modifierScheme("مفعال", "فعال");
+            tableSchemes.afficherTous();
+            
+            System.out.println("\n=== TEST SUPPRESSION ===");
+            tableSchemes.supprimerScheme("مفعلة");
+            tableSchemes.afficherTous();
+            
+            // 5. Transformation morphologique - Test avec différentes racines
+            System.out.println("\nÉTAPE 5: Tests de transformation morphologique");
+            
+            // Racines à tester (vérifier qu'elles existent dans l'arbre)
+            String[] racinesATester = {"كتب", "درس", "فتح", "عمل"};
+            
+            // Schèmes à appliquer
+            String[] schemes = {"فاعل", "مفعول", "تفاعل", "افتعل", "انفعل"};
+            
+            // Pour chaque racine, appliquer les transformations
+            for (String racine : racinesATester) {
+                if (arbre.exists(racine)) {
+                    System.out.println("\n--- Transformation de la racine: " + racine + " ---");
+                    
+                    // Transformation avec plusieurs schèmes
+                    List<String> derives = tableSchemes.transformer(racine, schemes,arbre);
+                    System.out.println("Dérivés générés: " + derives);
+                    
+                    // Transformation répétée pour augmenter les fréquences
+                    if (derives.size() > 0) {
+                        // Appliquer plusieurs fois le premier schème pour augmenter la fréquence
+                        for (int i = 0; i < 3; i++) {
+                            tableSchemes.transformer(racine, schemes[0],arbre);
+                        }
+                    }
+                } else {
+                    System.out.println("\n--- Racine non trouvée dans l'arbre: " + racine + " ---");
+                }
+            }
+            
+            // 6. AFFICHAGE DES HASHMAPS (LINKEDHASHMAP) AVEC FRÉQUENCES
+            System.out.println("\n=== ÉTAPE 6: AFFICHAGE DES HASHMAPS ASSOCIÉES AUX RACINES AVEC FRÉQUENCES ===\n");
+            arbre.afficherRacinesAvecDerives(arbre.root);
+            
+            // 7. Transformation avec une nouvelle racine (sera ajoutée automatiquement)
+            System.out.println("\nÉTAPE 7: Test avec une nouvelle racine non chargée");
+            String nouvelleRacine = "نصر";
+            System.out.println("Transformation de la nouvelle racine: " + nouvelleRacine);
+            
+            List<String> derivesNouvelle = tableSchemes.transformer(nouvelleRacine, schemes,arbre);
+            System.out.println("Dérivés générés pour '" + nouvelleRacine + "': " + derivesNouvelle);
+            
+            // 8. Afficher à nouveau pour voir la nouvelle racine ajoutée
+            System.out.println("\n=== ÉTAPE 8: AFFICHAGE APRÈS AJOUT DE LA NOUVELLE RACINE ===\n");
+            arbre.afficherRacinesAvecDerivesRecursif(arbre);
+            
+            // 9. Recherche spécifique d'une racine et affichage détaillé de son HashMap
+            System.out.println("\n=== ÉTAPE 9: AFFICHAGE DÉTAILLÉ D'UNE RACINE SPÉCIFIQUE ===");
+            String racineRecherchee = "كتب";
+            ABRNode node = arbre.search(racineRecherchee);
+            
+            if (node != null) {
+                System.out.println("\n--- DÉTAILS POUR LA RACINE: '" + racineRecherchee + "' ---");
+                System.out.println("HashMap des dérivés (LinkedHashMap):");
+                System.out.println("{");
+                
+                Map<String, Integer> derivesMap = node.getTousDerivesAvecFrequences();
+                for (Map.Entry<String, Integer> entry : derivesMap.entrySet()) {
+                    System.out.println("  \"" + entry.getKey() + "\" => " + entry.getValue() + 
+                                     " occurrence(s)");
+                }
+                System.out.println("}");
+                System.out.println("Taille du HashMap: " + derivesMap.size() + " entrées");
+            }
+            
+            // 10. Statistiques globales
+          
+            System.out.println("\n=== TESTS COMPLÉTÉS AVEC SUCCÈS ===");
+            
+        } catch (IOException e) {
+            System.out.println("Erreur lors du chargement du fichier: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Affiche toutes les racines avec leurs dérivés et fréquences
+     */
+
+    
+    private static void afficherRacinesAvecDerivesRecursif(ABRNode node, String prefix) {
+        if (node != null) {
+            afficherRacinesAvecDerivesRecursif(node.left, prefix);
+            
+            // Afficher la racine
+            System.out.println("═══════════════════════════════════════════");
+            System.out.println("🔤 RACINE: '" + node.getRacine() + "'");
+            
+            // Afficher le HashMap des dérivés avec fréquences
+            Map<String, Integer> derives = node.getTousDerivesAvecFrequences();
+            
+            if (derives.isEmpty()) {
+                System.out.println("   ⚠️  Aucun dérivé enregistré");
+            } else {
+                System.out.println("   📊 DÉRIVÉS (LinkedHashMap):");
+                System.out.println("   {");
+                
+                // Afficher chaque entrée du HashMap
+                for (Map.Entry<String, Integer> entry : derives.entrySet()) {
+                    String barreFrequence = "█".repeat(Math.min(entry.getValue(), 10));
+                    System.out.printf("     \"%-10s\" => %2d occurrence(s) %s%n", 
+                                     entry.getKey() + "\"", 
+                                     entry.getValue(), 
+                                     barreFrequence);
+                }
+                System.out.println("   }");
+                System.out.println("   📈 Taille du HashMap: " + derives.size() + " entrées");
+            }
+            
+            afficherRacinesAvecDerivesRecursif(node.right, prefix);
+        }
+    }
+    
+   
+   
+}

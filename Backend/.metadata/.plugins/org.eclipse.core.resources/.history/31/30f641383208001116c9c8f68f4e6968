@@ -1,0 +1,15 @@
+package ProjetMorphologieAlgo;
+
+
+
+public class ABRNode {
+    Racine racine;
+    private LinkedHashMap<String, Integer> derives;
+    ABRNode left, right;
+
+    public ABRNode(Racine racine) {
+        this.racine = racine;
+        this.left = null;
+        this.right = null;
+    }
+}

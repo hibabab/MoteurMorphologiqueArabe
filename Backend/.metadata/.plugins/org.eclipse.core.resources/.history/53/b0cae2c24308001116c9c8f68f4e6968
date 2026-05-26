@@ -1,0 +1,106 @@
+package ProjetMorphologieAlgo;
+
+import java.io.*;
+
+public class ABRTree {
+    private ABRNode root;
+	
+    // Constructeur
+    public ABRTree() {
+        this.root = null;
+    }
+    
+    // Constructeur avec fichier
+    public ABRTree(String fichierVerbes) throws IOException {
+        this.root = null;
+        chargerVerbesDepuisFichier(fichierVerbes);
+    }
+    
+    // 1. Charger les verbes depuis un fichier texte
+    public void chargerVerbesDepuisFichier(String nomFichier) throws IOException {
+        BufferedReader lecteur = new BufferedReader(new FileReader(nomFichier));
+        String ligne;
+        int count = 0;
+        
+        System.out.println("Chargement du fichier: " + nomFichier);
+        
+        while ((ligne = lecteur.readLine()) != null) {
+            ligne = ligne.trim();
+            if (ligne.length() >= 3) { // verbe de 3 lettres minimum
+                insert(new Racine(ligne));
+                count++;
+            }
+        }
+        lecteur.close();
+        System.out.println(count + " verbes chargés dans l'arbre.");
+    }
+
+    // 2. Insérer une racine
+    public void insert(Racine r) {
+        root = insertRec(root, r);
+    }
+
+    private ABRNode insertRec(ABRNode node, Racine r) {
+        if (node == null) return new ABRNode(r);
+
+        if (r.getLettres().compareTo(node.racine.getLettres()) < 0)
+            node.left = insertRec(node.left, r);
+        else
+            node.right = insertRec(node.right, r);
+
+        return node;
+    }
+
+    // 3. Rechercher une racine
+    public Racine search(String lettres) {
+        ABRNode curr = root;
+        while (curr != null) {
+            int c = lettres.compareTo(curr.racine.getLettres());
+            if (c == 0) return curr.racine;
+            curr = c < 0 ? curr.left : curr.right;
+        }
+        return null;
+    }
+    
+    // 4. Vérifier si une racine existe
+    public boolean exists(String lettres) {
+        ABRNode curr = root;
+        while (curr != null) {
+            int c = lettres.compareTo(curr.racine.getLettres());
+            if (c == 0) return true;
+            curr = c < 0 ? curr.left : curr.right;
+        }
+        return false;
+    }
+    
+    // 5. Afficher toutes les racines
+    public void afficherToutesRacines() {
+        if (root == null) {
+            System.out.println("L'arbre est vide.");
+            return;
+        }
+        
+        System.out.println("=== Liste de toutes les racines ===");
+        afficherInfixe(root);
+        System.out.println("====================================");
+    }
+    
+    // 6. Parcours infixe pour afficher dans l'ordre alphabétique
+    private void afficherInfixe(ABRNode node) {
+        if (node != null) {
+            afficherInfixe(node.left);
+            System.out.println("- " + node.racine.getLettres());
+            afficherInfixe(node.right);
+        }
+    }
+   public void ajouterDeriveARacine(String verbe,String motGenere) {
+	
+    	
+    }
+    
+   
+    
+    
+    
+  
+}

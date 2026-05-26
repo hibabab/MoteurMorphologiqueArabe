@@ -1,0 +1,70 @@
+package ProjetMorphologieAlgo;
+
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
+public class TraitementTextuel {
+    
+    public static void traiterFichier(String nomFichier) {
+        // Initialiser structures
+        ABRTree arbre = new ABRTree();
+        HashTable table = new HashTable();
+        
+        // 1. Lire le fichier et remplir l'arbre
+        try {
+            BufferedReader lecteur = new BufferedReader(new FileReader(nomFichier));
+            String ligne;
+            while ((ligne = lecteur.readLine()) != null) {
+                ligne = ligne.trim();
+                if (ligne.length() >= 3) { // verbe de 3 lettres minimum
+                    arbre.insert(new Racine(ligne));
+                    System.out.println("Ajouté à l'arbre: " + ligne);
+                }
+            }
+            lecteur.close();
+        } catch (IOException e) {
+            System.out.println("Problème avec le fichier: " + e.getMessage());
+        }
+        
+        System.out.println("\n=== Début des transformations ===");
+        
+        
+    }
+ 
+    
+   
+ 
+    
+    
+    // Méthode pour tester
+    public static void main(String[] args) {
+        HashTable ht = new HashTable();
+        ht.afficherTous();
+        
+        System.out.println("\n=== Test avec plusieurs schèmes ===");
+        String verbe = "كتب";
+        String[] mesSchemes = {"فاعل", "مفعول", "افتعل", "غيرموجود"};
+        
+        System.out.println("Verbe de base : " + verbe);
+        System.out.println("Schèmes à appliquer : " + Arrays.toString(mesSchemes));
+        
+        List<String> formes = ht.transformer(verbe, mesSchemes);
+        System.out.println("\nFormes dérivées :");
+        for (int i = 0; i < formes.size(); i++) {
+            System.out.println((i + 1) + ". " + formes.get(i));
+        }
+        
+        System.out.println("\n=== Test avec d'autres verbes ===");
+        
+        // Test avec un autre verbe
+        String verbe2 = "درس";
+        String[] schemes2 = {"فاعل", "مفعال", "مفعل"};
+        
+        List<String> formes2 = ht.transformer(verbe2, schemes2);
+        System.out.println("Verbe : " + verbe2);
+        System.out.println("Formes : " + formes2);
+    }
+}

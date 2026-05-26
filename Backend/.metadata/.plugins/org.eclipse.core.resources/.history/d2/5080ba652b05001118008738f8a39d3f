@@ -1,0 +1,36 @@
+package ProjetMorphologieAlgo;
+
+
+public class AVLTree {
+    private ABRNode root;
+
+ 
+  
+
+    public void insert(Racine r) {
+        root = insertRec(root, r);
+    }
+
+    private ABRNode insertRec(ABRNode node, Racine r) {
+        if (node == null) return new ABRNode(r);
+
+        if (r.getLettres().compareTo(node.racine.getLettres()) < 0)
+            node.left = insertRec(node.left, r);
+        else
+            node.right = insertRec(node.right, r);
+
+        
+
+        return node;
+    }
+
+    public Racine search(String lettres) {
+        ABRNode curr = root;
+        while (curr != null) {
+            int c = lettres.compareTo(curr.racine.getLettres());
+            if (c == 0) return curr.racine;
+            curr = c < 0 ? curr.left : curr.right;
+        }
+        return null;
+    }
+}

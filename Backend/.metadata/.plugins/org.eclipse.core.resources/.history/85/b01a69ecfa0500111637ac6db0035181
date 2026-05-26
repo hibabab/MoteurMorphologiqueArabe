@@ -1,0 +1,70 @@
+package ProjetMorphologieAlgo;
+
+import java.util.*;
+
+public class HashTable {
+    private HashMap<String, List<String>> table;
+    
+    public HashTable() {
+        table = new HashMap<>();
+        genererSchemesAutomatique();
+    }
+    
+    private void genererSchemesAutomatique() {
+        // Liste des schèmes à générer automatiquement
+        String[] schemes = {
+            "فاعل", "مفعول", "افتعل", "مفعال", 
+            "تفاعل", "انفعل", "مفعل", "مفعلة"
+        };
+        
+        for (String scheme : schemes) {
+            String regle = analyserScheme(scheme);
+            List<String> regles = new ArrayList<>();
+            regles.add(regle);
+            table.put(scheme, regles);
+        }
+    }
+    
+    private String analyserScheme(String scheme) {
+        StringBuilder regle = new StringBuilder();
+        
+        for (char lettre : scheme.toCharArray()) {
+            switch (lettre) {
+                case 'ف':
+                    regle.append("V[0]");
+                    break;
+                case 'ع':
+                    regle.append("V[1]");
+                    break;
+                case 'ل':
+                    regle.append("V[2]");
+                    break;
+                default:
+                    regle.append(lettre);
+            }
+        }
+        
+        return regle.toString();
+    }
+    
+    public String transformer(String verbe, String scheme) {
+        if (verbe.length() < 3) return "";
+        
+        List<String> regles = table.get(scheme);
+        if (regles == null) return "";
+        
+        String regle = regles.get(0);
+        return regle
+            .replace("V[0]", verbe.substring(0, 1))
+            .replace("V[1]", verbe.substring(1, 2))
+            .replace("V[2]", verbe.substring(2, 3));
+    }
+    
+    public void afficherTous() {
+        for (String scheme : table.keySet()) {
+            System.out.println(scheme + " → " + table.get(scheme));
+        }
+    }
+    
+  
+}

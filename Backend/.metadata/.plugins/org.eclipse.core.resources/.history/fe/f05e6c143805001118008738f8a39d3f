@@ -1,0 +1,12 @@
+package ProjetMorphologieAlgo;
+
+public class ABRNode {
+    public Racine racine;
+    public ABRNode left, right;
+  
+
+    public ABRNode(Racine racine) {
+        this.racine = racine;
+    
+    }
+}

@@ -1,0 +1,53 @@
+package ProjetMorphologieAlgo;
+
+
+import java.io.*;
+import java.util.List;
+import java.util.Set;
+
+public class TraitementTextuel {
+    
+    public static void traiterFichier(String nomFichier) {
+        // Initialiser structures
+        ABRTree arbre = new ABRTree();
+        HashTable table = new HashTable();
+        
+        // 1. Lire le fichier et remplir l'arbre
+        try {
+            BufferedReader lecteur = new BufferedReader(new FileReader(nomFichier));
+            String ligne;
+            while ((ligne = lecteur.readLine()) != null) {
+                ligne = ligne.trim();
+                if (ligne.length() >= 3) { // verbe de 3 lettres minimum
+                    arbre.insert(new Racine(ligne));
+                    System.out.println("Ajouté à l'arbre: " + ligne);
+                }
+            }
+            lecteur.close();
+        } catch (IOException e) {
+            System.out.println("Problème avec le fichier: " + e.getMessage());
+        }
+        
+        System.out.println("\n=== Début des transformations ===");
+        
+        
+    }
+ 
+    
+   
+ 
+    
+    
+    // Point d'entrée
+    public static void main(String[] args) {
+        // Chemin spécifique à votre projet
+    	 String cheminFichier = "C:\\Users\\qsqsq\\OneDrive\\Bureau\\ProjetAlgo\\ProjetMorphologie\\src\\ProjetMorphologieAlgo\\verbes.txt";
+        traiterFichier(cheminFichier);
+        String verbe = "كتب";
+        String[] mesSchemes = {"فاعل", "مفعول", "غيرموجود"}; // inclut un schème qui n'existe pas
+        HashTable ht = new HashTable();
+
+        List<String> formes = ht.transformer(verbe, mesSchemes);
+        System.out.println("Formes dérivées : " + formes);
+    }
+}

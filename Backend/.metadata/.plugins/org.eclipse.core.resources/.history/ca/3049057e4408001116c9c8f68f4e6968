@@ -1,0 +1,33 @@
+package ProjetMorphologieAlgo;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class ABRNode {
+    Racine racine;
+    private LinkedHashMap<String, Integer> derives;
+    ABRNode left, right;
+
+    public ABRNode(Racine racine) {
+        this.racine = racine;
+        this.left = null;
+        this.right = null;
+        this.derives = new LinkedHashMap<>();
+    }
+    public void ajouterOuIncrementer(String mot) {
+        if (mot == null || mot.isEmpty()) return;
+
+        if (derives.containsKey(mot)) {
+            derives.put(mot, derives.get(mot) + 1);
+            System.out.println("   🔄 Fréquence de '" + mot + "' mise à jour: "
+                    + derives.get(mot));
+        } else {
+            derives.put(mot, 1);
+            System.out.println("   ✅ Nouveau dérivé validé ajouté: '" + mot + "'");
+        }
+    }
+    public Map<String, Integer> getTousDerivesAvecFrequences() {
+        return Collections.unmodifiableMap(derives);
+    }
+}

@@ -1,0 +1,8 @@
+كتب
+فعل
+قرأ
+درس
+لعب
+عمل
+# Ceci est un commentaire
+ذهب

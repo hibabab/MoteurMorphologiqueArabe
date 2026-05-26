@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+C:\Users\qsqsq\OneDrive\Bureau\ProjetAlgo\.metadata\.plugins\org.eclipse.jdt.core
+1865797976.index
+2354013825.index
+1961352088.index

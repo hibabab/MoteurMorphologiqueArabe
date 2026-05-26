@@ -1,0 +1,201 @@
+package ProjetMorphologieAlgo;
+
+import java.util.*;
+
+public class HashTable {
+    private HashMap<String, List<String>> table;
+    
+    public HashTable() {
+        table = new HashMap<>();
+        genererSchemesAutomatique();
+    }
+    
+    private void genererSchemesAutomatique() {
+        String[] schemes = {
+            "فاعل", "مفعول", "افتعل", "مفعال", 
+            "تفاعل", "انفعل", "مفعل", "مفعلة"
+        };
+        
+        for (String scheme : schemes) {
+            ajouterSchemeAuto(scheme);
+        }
+    }
+    
+    private String analyserScheme(String scheme) {
+        StringBuilder regle = new StringBuilder();
+        
+        for (char lettre : scheme.toCharArray()) {
+            switch (lettre) {
+                case 'ف':
+                    regle.append("V[0]");
+                    break;
+                case 'ع':
+                    regle.append("V[1]");
+                    break;
+                case 'ل':
+                    regle.append("V[2]");
+                    break;
+                default:
+                    regle.append(lettre);
+            }
+        }
+        
+        return regle.toString();
+    }
+    
+    // ========== GESTION DES SCHÈMES ==========
+    
+    // 1. AJOUTER un nouveau schème (automatique)
+    public boolean ajouterScheme(String nomScheme) {
+        if (table.containsKey(nomScheme)) {
+            System.out.println("Le schème '" + nomScheme + "' existe déjà.");
+            return false;
+        }
+        
+        String regleGeneree = analyserScheme(nomScheme);
+        List<String> regles = new ArrayList<>();
+        regles.add(regleGeneree);
+        table.put(nomScheme, regles);
+        
+        System.out.println("✅ Schème '" + nomScheme + "' ajouté.");
+        System.out.println("   Règle générée: " + regleGeneree);
+        return true;
+    }
+    
+    // 2. MODIFIER un schème existant (juste le nom)
+    public boolean modifierScheme(String ancienNom, String nouveauNom) {
+        if (!table.containsKey(ancienNom)) {
+            System.out.println("❌ Le schème '" + ancienNom + "' n'existe pas.");
+            return false;
+        }
+        
+        if (table.containsKey(nouveauNom)) {
+            System.out.println("❌ Le schème '" + nouveauNom + "' existe déjà.");
+            return false;
+        }
+        
+        // Récupérer les règles de l'ancien schème
+        List<String> regles = table.remove(ancienNom);
+        
+        // Générer de nouvelles règles pour le nouveau nom
+        String nouvelleRegle = analyserScheme(nouveauNom);
+        List<String> nouvellesRegles = new ArrayList<>();
+        nouvellesRegles.add(nouvelleRegle);
+        
+        table.put(nouveauNom, nouvellesRegles);
+        
+        System.out.println("✅ Schème modifié:");
+        System.out.println("   Ancien: " + ancienNom + " → " + regles);
+        System.out.println("   Nouveau: " + nouveauNom + " → " + nouvellesRegles);
+        return true;
+    }
+    
+    // 3. SUPPRIMER un schème
+    public boolean supprimerScheme(String nomScheme) {
+        if (!table.containsKey(nomScheme)) {
+            System.out.println("❌ Le schème '" + nomScheme + "' n'existe pas.");
+            return false;
+        }
+        
+        table.remove(nomScheme);
+        System.out.println("✅ Schème '" + nomScheme + "' supprimé.");
+        return true;
+    }
+    
+    // 4. RECHERCHER un schème
+    public List<String> getRegles(String nomScheme) {
+        return table.get(nomScheme);
+    }
+    
+    // ========== TRANSFORMATIONS ==========
+    
+    public String transformer(String verbe, String scheme) {
+        if (verbe.length() < 3) return "";
+        
+        List<String> regles = table.get(scheme);
+        if (regles == null) return "";
+        
+        String regle = regles.get(0);
+        return regle
+            .replace("V[0]", verbe.substring(0, 1))
+            .replace("V[1]", verbe.substring(1, 2))
+            .replace("V[2]", verbe.substring(2, 3));
+    }
+    
+    public List<String> transformer(String verbe, String[] schemes) {
+        List<String> resultats = new ArrayList<>();
+        
+        if (verbe == null || verbe.length() < 3) {
+            System.err.println("Le verbe doit contenir au moins 3 lettres");
+            return resultats;
+        }
+        
+        for (String scheme : schemes) {
+            List<String> regles = table.get(scheme);
+            
+            if (regles != null) {
+                for (String regle : regles) {
+                    String forme = regle
+                        .replace("V[0]", verbe.substring(0, 1))
+                        .replace("V[1]", verbe.substring(1, 2))
+                        .replace("V[2]", verbe.substring(2, 3));
+                    resultats.add(forme);
+                }
+            } else {
+                System.out.println("Schème non trouvé : " + scheme);
+            }
+        }
+        
+        return resultats;
+    }
+    
+    // ========== AFFICHAGE ==========
+    
+    public void afficherTous() {
+        System.out.println("=== Schèmes disponibles (" + table.size() + ") ===");
+        for (String scheme : table.keySet()) {
+            List<String> regles = table.get(scheme);
+            System.out.println("• " + scheme + " → " + regles);
+        }
+    }
+    
+    public void afficherScheme(String nomScheme) {
+        if (table.containsKey(nomScheme)) {
+            List<String> regles = table.get(nomScheme);
+            System.out.println("Schème: " + nomScheme);
+            System.out.println("Règles: " + regles);
+        } else {
+            System.out.println("Schème '" + nomScheme + "' non trouvé.");
+        }
+    }
+    
+    // ========== GETTERS ==========
+    
+    public Set<String> getSchemesDisponibles() {
+        return table.keySet();
+    }
+    
+    public boolean contientScheme(String scheme) {
+        return table.containsKey(scheme);
+    }
+    
+    public int getNombreSchemes() {
+        return table.size();
+    }
+    
+    // ========== TEST ==========
+    
+    public static void main(String[] args) {
+        HashTable ht = new HashTable();
+        
+        
+        System.out.println("\n=== TEST TRANSFORMATION ===");
+        System.out.println("كتب → فاعل = " + ht.transformer("كتب", "فاعل"));
+        System.out.println("كتب → استفعل = " + ht.transformer("كتب", "استفعل"));
+        
+        System.out.println("\n=== TEST AVEC VERBES ===");
+        String[] schemes = {"فاعل", "مفعال", "تفاعل"};
+        List<String> formes = ht.transformer("درس", schemes);
+        System.out.println("درس → " + schemes + " = " + formes);
+    }
+}
