@@ -10,7 +10,7 @@ Ce projet implémente un **moteur morphologique pour la langue arabe** basé sur
 Il permet de générer et valider des mots dérivés à partir de racines arabes trilitères, en exploitant des structures de données avancées pour garantir efficacité et précision.
 
 **Stack technologique :**
-- 🖥️ **Frontend** : React.js (Vite + Tailwind CSS)
+- 🖥️ **Frontend** : React.js  Tailwind CSS
 - ⚙️ **Backend** : Java (Spring Boot REST API)
 - 🗂️ **Structures de données** : AVL Tree (racines) + Hash Table (schèmes)
 
@@ -24,7 +24,7 @@ Il permet de générer et valider des mots dérivés à partir de racines arabes
 
 > **Le dossier Drive contient :**
 > - `demo.mp4` — Démonstration complète du système
-> - `app-release.zip` — Application prête à l'emploi (JAR + build React)
+
 
 ---
 
@@ -41,47 +41,6 @@ La langue arabe repose sur un système morphologique **racine–schème** où le
 
 ---
 
-## 🏗️ Architecture du Projet
-
-```
-arabic-morpho-engine/
-│
-├── frontend/                  # React Application
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── RootManager.jsx       # Gestion des racines (arbre AVL)
-│   │   │   ├── SchemeManager.jsx     # Gestion des schèmes (hash table)
-│   │   │   ├── WordGenerator.jsx     # Génération morphologique
-│   │   │   ├── WordValidator.jsx     # Validation morphologique
-│   │   │   └── DerivativesList.jsx   # Liste des dérivés
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js
-│
-├── backend/                   # Java Spring Boot API
-│   ├── src/main/java/
-│   │   ├── controller/
-│   │   │   ├── RootController.java
-│   │   │   ├── SchemeController.java
-│   │   │   └── MorphologyController.java
-│   │   ├── service/
-│   │   │   ├── AVLTreeService.java        # Arbre AVL des racines
-│   │   │   ├── HashTableService.java      # Table de hachage des schèmes
-│   │   │   └── MorphologyEngine.java      # Moteur de dérivation
-│   │   ├── model/
-│   │   │   ├── Root.java
-│   │   │   ├── Scheme.java
-│   │   │   └── DerivedWord.java
-│   │   └── ArabicMorphoApplication.java
-│   ├── src/main/resources/
-│   │   └── roots.txt                      # Racines initiales
-│   └── pom.xml
-│
-└── README.md
-```
-
----
 
 ## ⚙️ Structures de Données
 
@@ -151,80 +110,6 @@ Les schèmes morphologiques sont stockés dans une **table de hachage implément
 
 ---
 
-## 🖥️ Installation & Lancement
-
-### Prérequis
-- Java 17+
-- Node.js 18+
-- Maven 3.8+
-
-### Backend (Spring Boot)
-
-```bash
-# Cloner le projet
-git clone https://github.com/votre-username/arabic-morpho-engine.git
-cd arabic-morpho-engine/backend
-
-# Compiler et lancer
-mvn clean install
-mvn spring-boot:run
-```
-
-> L'API sera disponible sur `http://localhost:8080`
-
-### Frontend (React)
-
-```bash
-cd ../frontend
-
-# Installer les dépendances
-npm install
-
-# Lancer en développement
-npm run dev
-```
-
-> L'interface sera disponible sur `http://localhost:5173`
-
----
-
-## 🔌 API Endpoints
-
-| Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| `POST` | `/api/roots` | Ajouter une racine |
-| `GET` | `/api/roots` | Lister toutes les racines |
-| `GET` | `/api/roots/{root}` | Rechercher une racine |
-| `DELETE` | `/api/roots/{root}` | Supprimer une racine |
-| `POST` | `/api/schemes` | Ajouter un schème |
-| `GET` | `/api/schemes` | Lister tous les schèmes |
-| `POST` | `/api/generate` | Générer un mot dérivé |
-| `POST` | `/api/validate` | Valider un mot |
-| `GET` | `/api/derivatives/{root}` | Lister les dérivés d'une racine |
-
-### Exemples de requêtes
-
-**Générer un mot dérivé :**
-```json
-POST /api/generate
-{
-  "root": "كتب",
-  "scheme": "مفعول"
-}
-// Réponse : { "word": "مكتوب", "root": "كتب", "scheme": "مفعول" }
-```
-
-**Valider un mot :**
-```json
-POST /api/validate
-{
-  "word": "مكتوب",
-  "root": "كتب"
-}
-// Réponse : { "valid": true, "scheme": "مفعول" }
-```
-
----
 
 ## 📊 Analyse de Complexité
 
@@ -240,18 +125,6 @@ POST /api/validate
 
 ---
 
-## 👨‍💻 Équipe
-
-| Nom | Rôle |
-|-----|------|
-| [Membre 1] | Backend Java / AVL Tree |
-| [Membre 2] | Backend Java / Hash Table |
-| [Membre 3] | Frontend React |
-| [Membre 4] | Moteur morphologique |
-
----
-
-## 📄 Licence
 
 Projet académique — Institut Supérieur d'Informatique, 2024–2025.  
 Usage strictement pédagogique.
