@@ -1,4 +1,4 @@
-# 🔤 محرك البحث الصرفي العربي — Arabic Morphological Search Engine
+# 🔤 Arabic Morphological Search Engine
 
 > Mini-projet Algorithmique — Moteur de Recherche Morphologique et Générateur de Dérivation Arabe
 
@@ -20,7 +20,7 @@ Il permet de générer et valider des mots dérivés à partir de racines arabes
 
 | Ressource | Lien |
 |-----------|------|
-| 🎥 Vidéo démo + APK/App | [📁 Google Drive](https://drive.google.com/drive/folders/VOTRE_LIEN_ICI) |
+| 🎥 Vidéo démo + APK/App | [📁 Google Drive](https://drive.google.com/drive/folders/1pXt8DiZM4KlOdS0s0thB5M5P5B4JWwRo?usp=sharing) |
 
 > **Le dossier Drive contient :**
 > - `demo.mp4` — Démonstration complète du système
